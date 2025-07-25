@@ -12,7 +12,7 @@ const Bonus = () => {
           <p className="text-xl">
             Shop today and enjoy up to 40% off all outerwear and accessories!
           </p>
-          <Button className="w-36"> issa</Button>
+          <Button className="w-36"> Shop Comfort </Button>
         </div>
         <div className=" relative w-[600px]">
           <Image src={logo1} alt="ko" className="w-full h-full sm:object-cover object-center" />
@@ -25,7 +25,7 @@ const Bonus = () => {
           <p className="text-xl">
           Shop now and save up to 50% on selected styles.
           </p>
-          <Button className="w-36"> i </Button>
+          <Button className="w-36"> Explore Fusion </Button>
 
 
         </div>

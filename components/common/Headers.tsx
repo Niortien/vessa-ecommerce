@@ -2,17 +2,25 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import imag1 from '@/public/Assets/images/hero.webp';
+
 import logo from '@/public/Assets/images/logo.png';
 import { ShoppingCart, UserRound } from 'lucide-react';
+import { useFinc } from '@/Store/Store';
+import { useRouter } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { useSession } from 'next-auth/react';
+import { Button } from '../ui/button';
 
 const Headers = () => {
   // État pour gérer l'ouverture/fermeture du menu mobile
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+   const { data: session } = useSession();
   // État pour gérer le dropdown du profil utilisateur
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-
+    const routeur = useRouter();
+  const handlclick = () => routeur.push("/panier");
   // Fonction pour basculer l'état du menu
+    const { cartArray } = useFinc();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -27,7 +35,7 @@ const Headers = () => {
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse ">
-            <Image src={logo} alt='coco' width={100} height={500} />
+            <Image src={logo} alt='logo' width={100} height={500} />
           </Link>
           <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
             <button 
@@ -38,13 +46,33 @@ const Headers = () => {
               onClick={toggleUserDropdown}
             >
               <span className="sr-only">Open user menu</span>
-             <div className='relative '>
-             <Image src={imag1} alt='coco' width={50} height={900} />
-             </div>
+            
             </button>
             <div className='border-2 border-grey-200 flex ml-2'>
-              <UserRound />
-              <ShoppingCart />
+              
+
+               {session?.user ? (
+                          <Avatar>
+                            <AvatarImage
+                            className='h-10 w-10 rounded-full'
+                              src={process.env.NEXT_PUBLIC_API_URL +"/"+ session.user.image}
+                              alt={"connecté"}
+                            />
+                            <AvatarFallback>
+                              {session?.user.name?.slice(0, 2).toUpperCase() || 'U'} 
+                            </AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <Button asChild>
+                           <UserRound />
+                          </Button>
+                        )}
+            <div onClick={handlclick}>
+                <ShoppingCart />
+                   <div className=" border-red-700 rounded-full flex justify-center items-center bg-amber-400 absolute h-5 w-5 top-2 right-3">
+              {cartArray.length}
+            </div>
+            </div>
             </div>
           
             {/* Dropdown du menu utilisateur */}
@@ -84,19 +112,17 @@ const Headers = () => {
                 <Link href="/shop" className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">SHOP</Link>
               </li>
               <li>
-                <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">OUR STORY</a>
+                <a href="/about" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">OUR STORY</a>
               </li>
               <li>
                 <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">COLLECTION</a>
               </li>
               <li>
-                <Link href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">BLOGS</Link>
+                <Link href="/blog" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">BLOGS</Link>
               </li>
+              
               <li>
-                <Link href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">REVIEWS</Link>
-              </li>
-              <li>
-                <Link href="contact" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">CONTACT</Link>
+                <Link href="/contact" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">CONTACT</Link>
               </li>
             </ul>
           </div>
