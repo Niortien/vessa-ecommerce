@@ -39,7 +39,6 @@ export const createCommande = async (body: CreateCommandeSchema) => {
     return { success: false, error: "Erreur de validation" };
   }
 
-  // Ici on envoie en JSON directement car pas de fichier
   const response = await fetch(CommandeAPI.create.endpoint, {
     method: CommandeAPI.create.method,
     headers: { "Content-Type": "application/json" },
@@ -148,4 +147,27 @@ export const deleteCommande = async (commandeID: string) => {
   }
 
   return { success: true, data: responseData };
+};
+
+// NOUVELLE FONCTION : GET COMMANDES BY CLIENT ID
+export const getCommandesByClientId = async (clientId: string) => {
+  try {
+    const response = await fetch(`${BASE_URL}/commande/client/${clientId}`, {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { success: false, error: errorText || `Erreur ${response.status}` };
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Erreur inconnue",
+    };
+  }
 };

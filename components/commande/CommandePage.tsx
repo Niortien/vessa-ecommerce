@@ -16,29 +16,27 @@ export default function CommandePage({ client }: { client: Client[] }) {
   const { cartArray, clearCart } = useFinc();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-   const { data: session } = useSession();
+  const { data: session } = useSession();
+
   const total = cartArray.reduce((acc, item) => acc + item.prix, 0);
-  const clientdata = client.find(clien => clien.nomUtilisateur === session?.user.name);
 
-const clientId = clientdata?.id;
-console.log("id==",clientId)
+  const clientData = client.find((c) => c.nomUtilisateur === session?.user?.name);
+  const clientId = clientData?.id;
+  const utilisateurId = session?.user?.id ?? undefined; // si NextAuth stocke l'id dans user.id
 
-   
-  // À remplacer par l'ID réel du client (via auth, contexte, etc.)
+  // Sécurité minimale
+  if (!clientId) {
+    console.error("Client introuvable pour l'utilisateur connecté.");
+  }
 
-
- console.log("mon client",client)
-
-  // Construction des lignes au format attendu par le schéma
- const lignes = cartArray.map((item) => ({
-  quantite: 1,                  // nombre entier positif
-  prixUnitaire: item.prix,      // nombre positif
-  taille: null,                 // ou string si tu as la taille
-  couleur: null,                // ou string si tu as la couleur
-  article_id: item.id,           // camelCase et UUID string
-  variete_id: null,              // camelCase et UUID string ou null
-}));
-
+  const lignes = cartArray.map((item) => ({
+    quantite: 1,
+    prixUnitaire: item.prix,
+    taille: null,
+    couleur: null,
+    articleId: item.id,
+    varieteId: null,
+  }));
 
   const handleSubmit = () => {
     if (cartArray.length === 0) {
@@ -46,22 +44,30 @@ console.log("id==",clientId)
       return;
     }
 
-   const commandeData = {
-  client_id: clientId,          // UUID valide
-  total,
-  remise: 0,
-  totalPaye: total,
-  statut: "EN_ATTENTE",
-  lignes,
-};
+    if (!clientId) {
+      toast.error("Client non identifié !");
+      return;
+    }
+
+    const commandeData = {
+      clientId,             // ✅ requis
+      utilisateurId,        // ✅ optionnel
+      total,
+      remise: 0,
+      totalPaye: total,
+      statut: "EN_ATTENTE",
+      lignes,
+    };
+
+    console.log("Payload envoyé :", commandeData);
 
     startTransition(async () => {
       const result = await createCommande(commandeData);
-
+      console.log("Résultat backend :", result);
       if (result.success) {
         toast.success("Commande enregistrée avec succès !");
-        clearCart(); // vider le panier
-        router.push("/confirmation"); // ou /commandes
+        clearCart();
+        router.push("/confirmation");
       } else {
         toast.error(result.error || "Erreur lors de la commande.");
       }
@@ -112,11 +118,8 @@ console.log("id==",clientId)
             {isPending ? "Traitement en cours..." : "Valider la commande"}
           </button>
 
-          <Button
-          
-            className="w-full bg-red text-white font-semibold py-3 rounded-md hover:bg-primary/90 transition"
-          >
-           <Link href={"/panier"}> Voir mon panier</Link>
+          <Button className="w-full bg-red text-white font-semibold py-3 rounded-md hover:bg-primary/90 transition">
+            <Link href="/panier">Voir mon panier</Link>
           </Button>
         </>
       )}

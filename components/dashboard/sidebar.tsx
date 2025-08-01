@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
   Package,
-  Palette,
+  
   FolderOpen,
   Tags,
   Users,

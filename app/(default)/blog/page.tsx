@@ -1,53 +1,52 @@
-import { Blog7 } from '@/components/blog7';
+import EcommerceBlog from '@/components/blog7';
 import React from 'react';
 
 const Page = () => {
     const demoData = {
-  tagline: "Latest Updates",
-  heading: "Blog Posts",
-  description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Elig doloremque mollitia fugiat omnis! Porro facilis quo animi consequatur. Explicabo.",
-  buttonText: "Explore all posts",
-  buttonUrl: "https://www.shadcnblocks.com",
-  posts: [
+ tagline : "Tendances Mode",
+  heading :  "Magazine Style",
+  description : "Découvrez les dernières tendances mode, conseils styling et actualités de nos collections. Inspirez-vous avec nos experts pour créer votre look parfait.",
+  buttonText : "Voir tous les articles",
+  buttonUrl : "/shop",
+  posts:[
     {
       id: "post-1",
-      title: "Build websites in minutes with shadcn/ui",
+      title: "Tendances Automne-Hiver 2024 : Les Must-Have",
       summary:
-        "Pellentesque eget quam ligula. Sed felis ante, consequat nec ultrices ut, ornare quis metus. Vivamus sit amet tortor vel enim sollicitudin hendrerit.",
-      label: "Ut varius dolor turpis",
-      author: "Jane Doe",
-      published: "1 Jan 2024",
-      url: "https://www.shadcnblocks.com",
-      image: "https://www.shadcnblocks.com/images/block/placeholder-dark-1.svg",
+        "Découvrez les pièces incontournables de la saison. Manteaux oversize, boots en cuir et accessoires statement qui définiront votre garde-robe automnale.",
+      label: "Tendances",
+      author: "Emma Dubois",
+      published: "15 Nov 2024",
+      url: "/blog/tendances-automne-hiver-2024",
+      image: "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&h=600&fit=crop&q=80",
     },
     {
       id: "post-2",
-      title: "Easily copy code to build your website",
+      title: "Comment Choisir le Sac Parfait pour Chaque Occasion",
       summary:
-        "Pellentesque eget quam ligula. Sed felis ante, consequat nec ultrices ut, ornare quis metus. Vivamus sit amet tortor vel enim sollicitudin hendrerit.",
-      label: "Ut varius dolor turpis",
-      author: "Jane Doe",
-      published: "1 Jan 2024",
-      url: "https://www.shadcnblocks.com",
-      image: "https://www.shadcnblocks.com/images/block/placeholder-dark-1.svg",
+        "Du sac de jour au clutch de soirée, notre guide complet pour sélectionner l'accessoire idéal selon vos besoins, votre morphologie et votre style personnel.",
+      label: "Accessoires",
+      author: "Sophie Martin",
+      published: "12 Nov 2024",
+      url: "/blog/choisir-sac-parfait",
+      image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&h=600&fit=crop&q=80",
     },
     {
       id: "post-3",
-      title: "The future of web design",
+      title: "Garde-Robe Capsule : 20 Pièces pour un Style Intemporel",
       summary:
-        "Pellentesque eget quam ligula. Sed felis ante, consequat nec ultrices ut, ornare quis metus. Vivamus sit amet tortor vel enim sollicitudin hendrerit.",
-      label: "Ut varius dolor turpis",
-      author: "Jane Doe",
-      published: "1 Jan 2024",
-      url: "https://www.shadcnblocks.com",
-      image: "https://www.shadcnblocks.com/images/block/placeholder-dark-1.svg",
+        "Créez une garde-robe minimaliste et polyvalente avec nos 20 essentiels mode. Des basiques de qualité qui se combinent à l'infini pour un style effortless chic.",
+      label: "Style Guide",
+      author: "Clara Rousseau",
+      published: "8 Nov 2024",
+      url: "/blog/garde-robe-capsule",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop&q=80",
     },
   ],
 };
     return (
         <div>
-            <Blog7 {...demoData} />
+            <EcommerceBlog {...demoData} />
             
         </div>
     );

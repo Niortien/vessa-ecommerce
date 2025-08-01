@@ -22,26 +22,26 @@ const Stats8 = ({
     url: "https://www.shadcnblocks.com",
   },
   stats = [
-    {
-      id: "stat-1",
-      value: "250%+",
-      label: "average growth in user engagement",
-    },
-    {
-      id: "stat-2",
-      value: "$2.5m",
-      label: "annual savings per enterprise partner",
-    },
-    {
-      id: "stat-3",
-      value: "200+",
-      label: "integrations with top industry platforms",
-    },
-    {
-      id: "stat-4",
-      value: "99.9%",
-      label: "customer satisfaction over the last year",
-    },
+     {
+    id: "stat-1",
+    value: "15K+",
+    label: "commandes passées ce mois-ci",
+  },
+  {
+    id: "stat-2",
+    value: "€450K",
+    label: "chiffre d'affaires mensuel",
+  },
+  {
+    id: "stat-3",
+    value: "€30.00",
+    label: "panier moyen par client",
+  },
+  {
+    id: "stat-4",
+    value: "98.7%",
+    label: "clients satisfaits sur les 6 derniers mois",
+  },
   ],
 }: Stats8Props) => {
   return (

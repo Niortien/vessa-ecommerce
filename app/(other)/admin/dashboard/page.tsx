@@ -83,6 +83,10 @@ console.log("Session data:", session);
             </Button>
           )}
         </div>
+        <Button>
+         
+           <Link href="/home"> aller sur l&apos;application</Link>
+        </Button>
       </div>
 
       {/* Stats Cards */}

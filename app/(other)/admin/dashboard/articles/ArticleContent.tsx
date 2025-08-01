@@ -5,7 +5,7 @@ import { useForm, useFieldArray, Controller, SubmitHandler } from 'react-hook-fo
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   createArticleSchema,
-  updateArticleSchema,
+
   CreateArticleSchema,
   UpdateArticleSchema,
 } from '@/service-anvogue/article/article.shema';
@@ -48,7 +48,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
-import { createVariete, updateVariete } from '@/service-anvogue/variete/variete.action';
+import { createVariete, deleteVariete, updateVariete } from '@/service-anvogue/variete/variete.action';
 
 export default function ArticleContent({
   article,
@@ -361,7 +361,15 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
   };
 
   // SUPPRESSION VARIANTE
-  const handleDeleteVariant = (articleId: string, variantId: string) => {
+ const handleDeleteVariant = async (articleId: string, variantId: string) => {
+  try {
+    const result = await deleteVariete(variantId);
+
+    if (!result.success) {
+      toast.error(result.error || "Échec de la suppression côté serveur");
+      return;
+    }
+
     setArticles(prev =>
       prev.map(article =>
         article.id === articleId
@@ -372,8 +380,13 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
           : article
       )
     );
+
     toast.success("Variante supprimée avec succès");
-  };
+  } catch (error) {
+    console.error("Erreur suppression variante :", error);
+    toast.error("Erreur inattendue lors de la suppression");
+  }
+};
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);

@@ -105,7 +105,7 @@ const handleConnexion: SubmitHandler<ConnexionClientSchema> = async (data) => {
                 <div className="w-12 h-1 bg-orange-500 rounded" />
               </div>
 
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">Connexion</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">Connexion du client</h2>
               <p className="text-gray-600 mb-8 text-sm">Bienvenue dans votre tableau de bord</p>
 
               <form onSubmit={handleSubmit(handleConnexion)} className="space-y-6">
@@ -155,7 +155,7 @@ const handleConnexion: SubmitHandler<ConnexionClientSchema> = async (data) => {
                 </button>
                 <p className="text-center text-gray-600 text-sm mt-4 flex items-center justify-center">
                   Pas encore de compte ?{" "} </p>
-                  <Link href="/inscription" className="text-orange-600 hover:underline">
+                  <Link href="/signin" className="text-orange-600 hover:underline">
                    
                    <button
                  

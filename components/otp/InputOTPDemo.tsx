@@ -48,7 +48,7 @@ export default function InputOTPDemo() {
     } else {
       window.localStorage.removeItem("emai"); // Stockage du token
       toast.success("Connexion réussie !");
-      router.push("/"); // Redirection après succès
+      router.push("/home"); // Redirection après succès
     }
   };
 

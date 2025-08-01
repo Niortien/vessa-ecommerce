@@ -30,7 +30,8 @@ const saisons = ['PRINTEMPS', 'ETE', 'AUTOMNE', 'HIVER', 'TOUTES_SAISONS'];
 
 export default function AddCollection() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -49,16 +50,18 @@ export default function AddCollection() {
       const result = await createCollection(data);
       if (result.success && result.data) {
         toast.success("Collection créée avec succès");
+        setIsDialogOpen(false);
+        reset();
+        router.refresh();
       } else {
+        if (result.error === 'UNAUTHORIZED') {
+          router.push('/admin/connexion');
+          return;
+        }
         toast.error(result.error || "Erreur lors de la création");
-        return;
       }
-      setIsDialogOpen(false);
-      reset();
     } catch {
       toast.error("Une erreur inattendue s'est produite");
-    } finally {
-      router.refresh()
     }
   };
 
@@ -78,33 +81,47 @@ export default function AddCollection() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Nouvelle collection
-          </DialogTitle>
+          <DialogTitle>Nouvelle collection</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-4 bg-white">
           <div>
             <Label htmlFor="nom">Nom</Label>
-            <Input id="nom" {...register('nom', { required: 'Le nom est obligatoire' })} />
+            <Input
+              id="nom"
+              {...register('nom', { required: 'Le nom est obligatoire' })}
+            />
+            {errors.nom && (
+              <p className="text-sm text-red-500 mt-1">{errors.nom.message}</p>
+            )}
           </div>
 
           <div>
             <Label htmlFor="description">Description</Label>
             <Textarea id="description" {...register('description')} />
+            {errors.description && (
+              <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>
+            )}
           </div>
 
           <div>
             <Label htmlFor="saison">Saison</Label>
-            <Select onValueChange={(val) => setValue('saison', val)}>
+            <Select
+              onValueChange={(val) => setValue('saison', val, { shouldValidate: true })}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Choisir une saison" />
               </SelectTrigger>
               <SelectContent>
                 {saisons.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {errors.saison && (
+              <p className="text-sm text-red-500 mt-1">{errors.saison.message}</p>
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
@@ -118,5 +135,5 @@ export default function AddCollection() {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

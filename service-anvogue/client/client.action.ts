@@ -1,5 +1,5 @@
 "use server"
-import { BASE_URL } from "../../base-url"
+import { BASE_URL } from "../base-url"
 
 const clientApi={
     //Route permettant de récuperer tous les cleints
@@ -23,3 +23,18 @@ const clientApi={
         method:"DELETE"
     }
 }
+
+export const getAllCommandes = async () => {
+  try {
+    const response = await fetch(clientApi.getAll.endpoint(), {
+      method: clientApi.getAll.method,
+    });
+
+    if (!response.ok) return [];
+    const responseData = await response.json();
+
+    return responseData;
+  } catch {
+    return [];
+  }
+};

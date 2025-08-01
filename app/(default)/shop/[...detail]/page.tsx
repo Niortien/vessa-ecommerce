@@ -19,9 +19,9 @@ const Page = async ({ params }: IProps) => {
   );
   const products: ArticleResponse = await responseArticle.json();
   const articleList: Article[] = products.data;
-  console.log('🔍 Liste des produits :', articleList);
+ 
   const detail = params.detail[0]
-  console.log('Liste des articles :', products);
+
 console.log('ID recherché :', detail);
 
   const product = products.data;

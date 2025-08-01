@@ -102,6 +102,22 @@ export interface Commande {
 
   lignes: LigneCommande[];       // Tableau de lignes de commande
 }
+export type LigneCommandeWithRelations = LigneCommande & {
+  variete?: Variete & {
+    article?: Article | null;
+  } | null;
+};
+
+export type CommandeWithRelations = {
+  id: string;
+  date: Date;
+  statut: string;
+  total: number;
+  lignes: LigneCommandeWithRelations[];
+  client: Client;
+  utilisateur?: Utilisateur | null;
+};
+
 
 export interface Client {
   id: string;
@@ -133,12 +149,13 @@ interface LigneCommande {
   taille?: string | null;
   couleur?: string | null;
 
-  variete: Variete;        // à typer selon ton modèle Variete
+  variete: Variete;        // objet Variete complet (avec article inclus si besoin)
   variete_id: string;
 
-  commande: Commande;
+  // Ne pas inclure la relation complète 'commande' pour éviter les cycles
   commande_id: string;
 }
+
 
 interface Commande {
   id: string;              // UUID
@@ -246,14 +263,10 @@ export interface Variete {
   id: string;
   reference: string;
   couleur: string;
-  tailles?: TailleVariete[]; // correspond au champ JSON
+  tailles?: TailleVariete[];
   image?: string;
 
-  // Relation avec Article
-  article: {
-    id: string;
-    nom: string; // tu peux ajouter d'autres champs nécessaires, ou importer l'interface Article complète si besoin
-  };
+  article: Article;   // <-- ici on utilise la définition complète
   article_id: string;
 }
 

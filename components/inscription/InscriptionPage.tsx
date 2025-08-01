@@ -58,7 +58,7 @@ export default function InscriptionPage() {
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[650px]">
           {/* FORMULAIRE */}
           <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-            <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Créer un compte</h2>
+            <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Créer un compte Utilisateur</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <input
                 type="text"

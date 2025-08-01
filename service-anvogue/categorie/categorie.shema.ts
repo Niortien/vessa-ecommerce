@@ -10,13 +10,11 @@ export const CategorieTypeEnum = z.enum([
 
 // ✅ Schéma pour la création
 export const createCategorieSchema = z.object({
-  nom: z.string({
-    required_error: "Le nom est requis",
-  }).min(1, "Le nom est requis"),
+  nom: z.string()
+    .min(1, "Le nom est requis"),
 
-  description: z.string({
-    required_error: "La description est requise",
-  }).min(1, "La description est requise"),
+  description: z.string()
+    .min(1, "La description est requise"),
 
   type: CategorieTypeEnum.default("VETEMENT"),
 });

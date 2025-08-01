@@ -25,10 +25,13 @@ import { createCategorie } from '@/service-anvogue/categorie/categorie.action';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { CreateCategorieSchema } from '@/service-anvogue/categorie/categorie.shema';
+import { useSession } from 'next-auth/react';
 
 export default function AddCategorie() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+  const { data: session } = useSession();
+
   const {
     register,
     handleSubmit,
@@ -38,6 +41,12 @@ export default function AddCategorie() {
   } = useForm<CreateCategorieSchema>();
 
   const handleAdd = () => {
+    if (!session) {
+      toast.warning('Veuillez vous connecter pour ajouter une catégorie.');
+      router.push('/admin/connexion');
+      return;
+    }
+
     reset();
     setIsDialogOpen(true);
   };
@@ -46,9 +55,9 @@ export default function AddCategorie() {
     try {
       const result = await createCategorie(data);
       if (result.success && result.data) {
-        toast.success("Categorie créée avec succès");
+        toast.success('Catégorie créée avec succès');
       } else {
-        toast.error(result.error || "Erreur lors de la création");
+        toast.error(result.error || 'Erreur lors de la création');
         return;
       }
       setIsDialogOpen(false);
@@ -56,41 +65,31 @@ export default function AddCategorie() {
     } catch {
       toast.error("Une erreur inattendue s'est produite");
     } finally {
-      router.refresh()
+      router.refresh();
     }
   };
 
   const handleDialogClose = (open: boolean) => {
     setIsDialogOpen(open);
-    if (!open) {
-      reset();
-    }
+    if (!open) reset();
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         <Button onClick={handleAdd}>
-          <Plus size={20} className="mr-2" /> Nouvelle Categorie
+          <Plus size={20} className="mr-2" /> Nouvelle Catégorie
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Nouvelle Categorie
-          </DialogTitle>
+          <DialogTitle>Nouvelle Catégorie</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-white p-4">
           <div className="space-y-2">
             <Label htmlFor="nom">Nom de la catégorie</Label>
-            <Input
-              id="nom"
-              {...register('nom')}
-              placeholder="Ex: Vêtements d'été"
-            />
-            {errors.nom && (
-              <p className="text-sm text-destructive">{errors.nom.message}</p>
-            )}
+            <Input id="nom" {...register('nom')} placeholder="Ex: Vêtements d'été" />
+            {errors.nom && <p className="text-sm text-destructive">{errors.nom.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -108,28 +107,22 @@ export default function AddCategorie() {
 
           <div className="space-y-2">
             <Label htmlFor="type">Type</Label>
-            <Select onValueChange={(value) => setValue('type', value as any)} defaultValue="VETEMENT" >
+            <Select onValueChange={(value) => setValue('type', value as any)} defaultValue="VETEMENT">
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner le type" />
               </SelectTrigger>
-              <SelectContent className='bg-red-50'>
+              <SelectContent className="bg-red-50">
                 <SelectItem value="VETEMENT">Vêtement</SelectItem>
                 <SelectItem value="CHAUSSURE">Chaussure</SelectItem>
                 <SelectItem value="ALIMENT">Aliment</SelectItem>
                 <SelectItem value="MONTRE">Montre</SelectItem>
               </SelectContent>
             </Select>
-            {errors.type && (
-              <p className="text-sm text-destructive">{errors.type.message}</p>
-            )}
+            {errors.type && <p className="text-sm text-destructive">{errors.type.message}</p>}
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleDialogClose(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => handleDialogClose(false)}>
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>
@@ -139,5 +132,5 @@ export default function AddCategorie() {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

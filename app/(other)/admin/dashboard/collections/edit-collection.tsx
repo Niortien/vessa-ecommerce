@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -20,110 +21,145 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Edit, Plus } from 'lucide-react';
-import { CreateCollectionSchema, updateCollectionSchema } from '@/service-anvogue/collection/collection.schema';
-import { createCollection, updateCollection } from '@/service-anvogue/collection/collection.action';
+import { Edit } from 'lucide-react';
+import { updateCollection } from '@/service-anvogue/collection/collection.action';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-
+import { CreateCollectionSchema } from '@/service-anvogue/collection/collection.schema';
 import { Collection } from '@/lib/types';
+import { useSession } from 'next-auth/react';
 
 const saisons = ['PRINTEMPS', 'ÉTÉ', 'AUTOMNE', 'HIVER', 'TOUTES_SAISONS'];
+
 interface EditCollectionProps {
-    collection: Collection;
-  }
+  collection: Collection;
+}
+
 export default function EditCollection({ collection }: EditCollectionProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+  const { data: session } = useSession();
+
   const {
     register,
     handleSubmit,
     reset,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<CreateCollectionSchema>();
+  } = useForm<CreateCollectionSchema>({
+    defaultValues: {
+      nom: collection.nom,
+      description: collection.description,
+      saison: collection.saison as
+        | 'PRINTEMPS'
+        | 'ÉTÉ'
+        | 'AUTOMNE'
+        | 'HIVER'
+        | 'TOUTES_SAISONS',
+    },
+  });
 
-  
   const handleEdit = () => {
-     reset();
-     setIsDialogOpen(true);
-   };
- 
-   const onSubmit = async (data: CreateCollectionSchema) => {
-     try {
-       const result = await updateCollection(collection.id, data);
-       if (result.success && result.data) {
-         toast.success("Collection modifiée avec succès");
-       } else {
-         toast.error(result.error || "Erreur lors de la modification");
-         return;
-       }
-       setIsDialogOpen(false);
-       reset();
-     } catch {
-       toast.error("Une erreur inattendue s'est produite");
-     } finally {
-       router.refresh()
-     }
-   };
+    if (!session) {
+      toast.warning("Veuillez vous connecter pour modifier une collection.");
+      router.push('/admin/connexion');
+      return;
+    }
+    reset();
+    setIsDialogOpen(true);
+  };
+
+  const onSubmit = async (data: CreateCollectionSchema) => {
+    try {
+      const result = await updateCollection(collection.id, data);
+      if (result.success && result.data) {
+        toast.success('Collection modifiée avec succès');
+      } else {
+        toast.error(result.error || 'Erreur lors de la modification');
+        return;
+      }
+      setIsDialogOpen(false);
+      reset();
+    } catch {
+      toast.error("Une erreur inattendue s'est produite");
+    } finally {
+      router.refresh();
+    }
+  };
 
   const handleDialogClose = (open: boolean) => {
     setIsDialogOpen(open);
-    if (!open) {
-      reset();
-    }
+    if (!open) reset();
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
-        <Button 
-        onClick={() => handleEdit()}>
+        <Button variant="ghost" size="sm" onClick={handleEdit}>
           <Edit className="h-4 w-4" />
-          
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Nouvelle collection
-          </DialogTitle>
+          <DialogTitle>Modifier la collection</DialogTitle>
+          <DialogDescription>
+            Apportez les modifications nécessaires à cette collection.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-4 bg-white">
-          <div>
-            <Label htmlFor="nom">Nom</Label>
-            <Input id="nom" {...register('nom')} />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-white p-4">
+          <div className="space-y-2">
+            <Label htmlFor="nom">Nom de la collection</Label>
+            <Input
+              id="nom"
+              {...register('nom')}
+              placeholder="Ex: Collection Été 2025"
+            />
+            {errors.nom && <p className="text-sm text-destructive">{errors.nom.message}</p>}
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" {...register('description')} />
+            <Textarea
+              id="description"
+              {...register('description')}
+              placeholder="Description de la collection..."
+              rows={3}
+            />
+            {errors.description && (
+              <p className="text-sm text-destructive">{errors.description.message}</p>
+            )}
           </div>
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="saison">Saison</Label>
-            <Select onValueChange={(val) => setValue('saison', val)}>
+            <Select
+              onValueChange={(value) => setValue('saison', value )}
+              defaultValue={collection.saison}
+            >
               <SelectTrigger>
-                <SelectValue placeholder="Choisir une saison" />
+                <SelectValue placeholder="Sélectionner la saison" />
               </SelectTrigger>
               <SelectContent>
                 {saisons.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {errors.saison && <p className="text-sm text-destructive">{errors.saison.message}</p>}
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => handleDialogClose(false)}>
               Annuler
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'En cours...' : 'Modifier'}
             </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

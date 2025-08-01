@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,13 +27,17 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { CreateCategorieSchema } from '@/service-anvogue/categorie/categorie.shema';
 import { Category } from '@/lib/types';
+import { useSession } from 'next-auth/react';
 
 interface EditCategorieProps {
   categorie: Category;
 }
+
 export default function EditCategorie({ categorie }: EditCategorieProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+  const { data: session,  } = useSession();
+
   const {
     register,
     handleSubmit,
@@ -44,11 +48,16 @@ export default function EditCategorie({ categorie }: EditCategorieProps) {
     defaultValues: {
       nom: categorie.nom,
       description: categorie.description,
-      type: categorie.type as "VETEMENT" | "CHAUSSURE" | "ALIMENT" | "MONTRE",
+      type: categorie.type as 'VETEMENT' | 'CHAUSSURE' | 'ALIMENT' | 'MONTRE',
     },
   });
 
   const handleEdit = () => {
+    if (!session) {
+      toast.warning("Veuillez vous connecter pour modifier une catégorie.");
+      router.push('/admin/connexion');
+      return;
+    }
     reset();
     setIsDialogOpen(true);
   };
@@ -57,9 +66,9 @@ export default function EditCategorie({ categorie }: EditCategorieProps) {
     try {
       const result = await updateCategorie(categorie.id, data);
       if (result.success && result.data) {
-        toast.success("Categorie modifiée avec succès");
+        toast.success('Catégorie modifiée avec succès');
       } else {
-        toast.error(result.error || "Erreur lors de la modification");
+        toast.error(result.error || 'Erreur lors de la modification');
         return;
       }
       setIsDialogOpen(false);
@@ -67,35 +76,27 @@ export default function EditCategorie({ categorie }: EditCategorieProps) {
     } catch {
       toast.error("Une erreur inattendue s'est produite");
     } finally {
-      router.refresh()
+      router.refresh();
     }
   };
 
   const handleDialogClose = (open: boolean) => {
     setIsDialogOpen(open);
-    if (!open) {
-      reset();
-    }
+    if (!open) reset();
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => handleEdit()}
-        >
+        <Button variant="ghost" size="sm" onClick={handleEdit}>
           <Edit className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Supprimer la Categorie
-          </DialogTitle>
+          <DialogTitle>Modifier la Catégorie</DialogTitle>
           <DialogDescription>
-            Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.
+            Apportez les modifications nécessaires à cette catégorie.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 bg-white p-4">
@@ -106,9 +107,7 @@ export default function EditCategorie({ categorie }: EditCategorieProps) {
               {...register('nom')}
               placeholder="Ex: Vêtements d'été"
             />
-            {errors.nom && (
-              <p className="text-sm text-destructive">{errors.nom.message}</p>
-            )}
+            {errors.nom && <p className="text-sm text-destructive">{errors.nom.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -126,28 +125,25 @@ export default function EditCategorie({ categorie }: EditCategorieProps) {
 
           <div className="space-y-2">
             <Label htmlFor="type">Type</Label>
-            <Select onValueChange={(value) => setValue('type', value as any)} defaultValue="VETEMENT" >
+            <Select
+              onValueChange={(value) => setValue('type', value as any)}
+              defaultValue={categorie.type}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner le type" />
               </SelectTrigger>
-              <SelectContent className='bg-red-50'>
+              <SelectContent>
                 <SelectItem value="VETEMENT">Vêtement</SelectItem>
                 <SelectItem value="CHAUSSURE">Chaussure</SelectItem>
                 <SelectItem value="ALIMENT">Aliment</SelectItem>
                 <SelectItem value="MONTRE">Montre</SelectItem>
               </SelectContent>
             </Select>
-            {errors.type && (
-              <p className="text-sm text-destructive">{errors.type.message}</p>
-            )}
+            {errors.type && <p className="text-sm text-destructive">{errors.type.message}</p>}
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleDialogClose(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => handleDialogClose(false)}>
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>
@@ -157,5 +153,5 @@ export default function EditCategorie({ categorie }: EditCategorieProps) {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
