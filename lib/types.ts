@@ -1,6 +1,5 @@
-import { Commande } from './../type/type';
-import { Avatar } from '@radix-ui/react-avatar';
-import { AuthResponse } from './types';
+
+
 export interface ArticleVariant {
   id: string;
   articleId: string;
@@ -157,19 +156,24 @@ interface LigneCommande {
 }
 
 
-interface Commande {
+
+ export interface Commande {
   id: string;              // UUID
   date: string;            // ISO date string
-  statut: "EN_ATTENTE" | "TRAITEE" | "ANNULLEE" | string; // Enum StatutCommande, adapte si besoin
+  statut: StatutCommande; // Enum StatutCommande, adapte si besoin
   total: number;
 
-  utilisateur: Utilisateur;
-  utilisateur_id: string;
+  utilisateur?: Utilisateur;
+  utilisateur_id?: string;
 
   client: Client;
   client_id: string;
 
   lignes: LigneCommande[];
+}
+export enum Genre{
+  HOMME="HOMME",
+  FEMME="FEMME"
 }
 
 interface Note {
@@ -213,7 +217,7 @@ interface Utilisateur {
   updatedAt: string;       // ISO date string
 
   commandes: Commande[];
-  audits: Audit[];         // à typer selon ton modèle Audit
+  // audits: Audit[];         // à typer selon ton modèle Audit
 }
 // Exemple d’interface Commande, Favori, Note basique (à adapter)
 
@@ -250,7 +254,12 @@ export interface Article {
   updatedAt: Date;
 }
 
-
+export enum StatutCommande  {
+  EN_ATTENTE="EN_ATTENTE",
+  VALIDEE="VALIDEE",
+  ANNULEE="ANNULEE",
+  LIVREE="LIVREE"
+}
 // Définition du type pour les tailles
 export type TailleVariete = {
   taille: string;

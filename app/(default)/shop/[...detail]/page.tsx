@@ -3,7 +3,7 @@ import Content from './Content';
 import { Article } from '@/type/type';
 
 interface IProps {
-  params: { detail: string }; // ✅ correction ici
+  params:Promise< { detail: string }>; // ✅ correction ici
 }
 
 type ArticleResponse = {
@@ -18,17 +18,17 @@ const Page = async ({ params }: IProps) => {
     `${process.env.NEXT_PUBLIC_API_URL}/article`
   );
   const products: ArticleResponse = await responseArticle.json();
-  const articleList: Article[] = products.data;
+
  
-  const detail = params.detail[0]
+  const detail = (await params).detail
 
 console.log('ID recherché :', detail);
 
   const product = products.data;
-  const final=product.find((prod) => prod.id === detail))
+  const final=product.find((prod) => prod.id === detail)
  // ✅ conversion ici
 
-  console.log('🔍 Produit trouvé :', final);
+
 
   if (!final) {
     return <div>❌ Produit introuvable</div>;

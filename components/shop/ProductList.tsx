@@ -15,7 +15,7 @@ const ProductList = ({
   products: { data: Article[]; total: number; page: number; limit: number };
  
 }) => {
-    const [product, setProducts] = React.useState<Article[]>(products?.data ?? []);
+    const product:Article[] = products?.data ?? [];
 ;
   return (
     <div>

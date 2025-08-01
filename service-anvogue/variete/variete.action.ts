@@ -28,7 +28,7 @@ const VarieteAPI = {
 
 // CREATE
 export const createVariete = async (body: CreateVarieteSchema) => {
-  const parsed = createVarieteSchema.safeParse(body);
+  // const parsed = createVarieteSchema.safeParse(body);
   try {
       const parsed = createVarieteSchema.safeParse(body);
       if (!parsed.success) {

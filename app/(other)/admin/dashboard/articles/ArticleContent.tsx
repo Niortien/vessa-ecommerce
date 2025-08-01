@@ -5,7 +5,7 @@ import { useForm, useFieldArray, Controller, SubmitHandler } from 'react-hook-fo
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   createArticleSchema,
-
+  updateArticleSchema,
   CreateArticleSchema,
   UpdateArticleSchema,
 } from '@/service-anvogue/article/article.shema';
@@ -48,7 +48,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
-import { createVariete, deleteVariete, updateVariete } from '@/service-anvogue/variete/variete.action';
+import { createVariete, updateVariete } from '@/service-anvogue/variete/variete.action';
 
 export default function ArticleContent({
   article,
@@ -66,8 +66,8 @@ export default function ArticleContent({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isVariantDialogOpen, setIsVariantDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [categories, setCategories] = useState<Category[]>(categorie);
-  const [collections, setCollections] = useState<Collection[]>(collection);
+   const categories:Category[] = categorie;
+  const collections :Collection[] =collection;
   
   const [files, setFiles] = useState<File[]>([]);
   const newArticleBtnRef = useRef<HTMLButtonElement>(null);
@@ -188,7 +188,7 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
       image: files.length > 0 && files[0] instanceof File ? files[0] : undefined,
     };
 
-    let result;
+    let result:{ success: boolean; data?: Article; error?: string };;
 
     if (editingVariant) {
       // 🔁 MODIFICATION
@@ -306,7 +306,8 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
       nom: article.nom || '',
       description: article.description || '',
       prix: article.prix || 0,
-      genre: article.genre ?? 'HOMME',
+    genre: (article.genre as "HOMME" | "FEMME") ?? "HOMME",
+
       estEnPromotion: article.estEnPromotion || false,
       categorie_id: article.categorie_id ?? '',
       collection_id: article.collection_id ?? '',
@@ -361,15 +362,7 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
   };
 
   // SUPPRESSION VARIANTE
- const handleDeleteVariant = async (articleId: string, variantId: string) => {
-  try {
-    const result = await deleteVariete(variantId);
-
-    if (!result.success) {
-      toast.error(result.error || "Échec de la suppression côté serveur");
-      return;
-    }
-
+  const handleDeleteVariant = (articleId: string, variantId: string) => {
     setArticles(prev =>
       prev.map(article =>
         article.id === articleId
@@ -380,13 +373,8 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
           : article
       )
     );
-
     toast.success("Variante supprimée avec succès");
-  } catch (error) {
-    console.error("Erreur suppression variante :", error);
-    toast.error("Erreur inattendue lors de la suppression");
-  }
-};
+  };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -747,7 +735,7 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
       </p>
     </div>
     {variantErrors.image && (
-      <p className="text-red-500 text-sm mt-1">{variantErrors.image.message}</p>
+      <p className="text-red-500 text-sm mt-1">{variantErrors.image?.message}</p>
     )}
   </div>
 
@@ -803,7 +791,7 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
     {taillesFields.length === 0 && (
       <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg bg-white">
         <p>Aucune taille ajoutée</p>
-        <p className="text-sm">Cliquez sur "Ajouter une taille"</p>
+        <p className="text-sm">Cliquez sur Ajouter une taille</p>
       </div>
     )}
 
@@ -1077,7 +1065,7 @@ const onSubmitVariants: SubmitHandler<CreateVarieteSchema> = async (data) => {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Images:</span>
-                          <span className="font-medium">{variant.images?.length || 0}</span>
+                          <span className="font-medium">{variant.image?.length || 0}</span>
                         </div>
                       </div>
 

@@ -1,15 +1,9 @@
 // ShopContent.tsx
 import React from "react";
 import ProductList from "@/components/shop/ProductList";
+import { Article } from "@/type/type";
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-}
+
 
 const ShopContent = async () => {
   // Appel API proprement
@@ -22,7 +16,7 @@ const ShopContent = async () => {
   //Récuperation et convertion des données sous forme JSON;
   
   type ArticleResponse = {
-    data: Product[];
+    data: Article[];
     total: number;
     page: number;
     limit: number;

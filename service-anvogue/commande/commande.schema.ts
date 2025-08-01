@@ -1,12 +1,8 @@
+import { StatutCommande } from "@/lib/types";
 import { z } from "zod";
 
 // Enum des statuts de commande
-export const StatutCommande = z.enum([
-  "EN_ATTENTE",
-  "VALIDEE",
-  "ANNULEE",
-  "LIVREE",
-]);
+
 
 // Ligne de commande
 export const ligneCommandeSchema = z.object({
@@ -51,7 +47,7 @@ export const createCommandeSchema = z.object({
     .nullable()
     .default(0),
 
-  statut: StatutCommande.optional().default("EN_ATTENTE"),
+  statut: z.nativeEnum(StatutCommande).optional().default(StatutCommande.EN_ATTENTE),
 
   lignes: z.array(ligneCommandeSchema)
     .min(1, { message: "La commande doit avoir au moins une ligne" }),

@@ -10,7 +10,7 @@ import { createCommande } from "@/service-anvogue/commande/commande.action";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
-import { Client } from "@/lib/types";
+import { Client, StatutCommande } from "@/lib/types";
 
 export default function CommandePage({ client }: { client: Client[] }) {
   const { cartArray, clearCart } = useFinc();
@@ -55,7 +55,7 @@ export default function CommandePage({ client }: { client: Client[] }) {
       total,
       remise: 0,
       totalPaye: total,
-      statut: "EN_ATTENTE",
+      statut: StatutCommande.EN_ATTENTE,
       lignes,
     };
 
@@ -87,7 +87,7 @@ export default function CommandePage({ client }: { client: Client[] }) {
               <li key={item.id} className="flex gap-4 items-center border p-4 rounded-md">
                 <Image
                   src={
-                    item.image.startsWith("http")
+                    item.image && item.image.startsWith("http")
                       ? item.image
                       : `${process.env.NEXT_PUBLIC_API_URL}/${item.image}`
                   }

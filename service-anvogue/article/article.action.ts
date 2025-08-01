@@ -2,9 +2,11 @@
 
 import {
   createArticleSchema,
-  updateArticleSchema,
+ 
   CreateArticleSchema,
   UpdateArticleSchema,
+  updateArticleSchema,
+
 } from "./article.shema";
 import { BASE_URL } from "../base-url";
 import { Article } from "@/lib/types";
@@ -105,7 +107,7 @@ export const createArticle = async (body: CreateArticleSchema) => {
 };
 
 // GET ALL ARTICLES ACTION - CORRECTION PRINCIPALE
-export const getAllArticles = async (query?: { page?: number; limit?: number; [key: string]: any }): Promise<{ 
+export const getAllArticles = async (query?: { page?: number; limit?: number; [key: string]: string | number | boolean|undefined }): Promise<{ 
   success: boolean; 
   data?: Article[]; 
   pagination?: { total: number; page: number; limit: number }; 

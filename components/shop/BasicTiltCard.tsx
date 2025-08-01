@@ -4,9 +4,14 @@ import { Tilt } from "@/components/ui/tilt";
 import Image from "next/image";
 
 import { useRouter } from "next/navigation";
-import { Article } from "@/type/type";
 
-function BasicTiltCard({ id, nom, image, prix }:Article) {
+interface ArticleProps{
+  id:string
+  nom:string
+  image?:string
+  prix:number
+}
+function BasicTiltCard({ id, nom, image, prix }: ArticleProps) {
    const router = useRouter();
   const handleClick = () => {
     router.push(`/shop/${id}`);

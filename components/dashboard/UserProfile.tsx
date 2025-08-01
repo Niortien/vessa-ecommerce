@@ -25,16 +25,17 @@ export default function UserProfile({ client }: { client: Client[] }) {
   const [commandes, setCommandes] = useState<Commande[]>([]);
 
   useEffect(() => {
-    if (!clientConnecte) return;
-    async function fetchCommandes() {
-      const result = await getCommandesByClientId(clientConnecte.id);
+    if (!clientConnecte || (clientConnecte && !clientConnecte.id) ) return;
+    async function fetchCommandes(id:string) {
+    
+      const result = await getCommandesByClientId(id);
       if (result.success) {
         setCommandes(result.data);
       } else {
         console.error("Erreur fetch commandes:", result.error);
       }
     }
-    fetchCommandes();
+    fetchCommandes(clientConnecte.id);
   }, [clientConnecte]);
 
   if (!clientConnecte) {
@@ -107,7 +108,7 @@ export default function UserProfile({ client }: { client: Client[] }) {
                       <h4 className="font-semibold text-lg">Articles :</h4>
                       <ul className="space-y-2">
                         {commande.lignes.map((ligne) => {
-                          const article = ligne.variete?.article || ligne.article;
+                          const article = ligne.variete?.article;
                           return (
                             <li
                               key={ligne.id}

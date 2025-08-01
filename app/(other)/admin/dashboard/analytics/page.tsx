@@ -1,10 +1,9 @@
 'use client';
 
-import { DashboardLayout } from '@/app/dashboard/layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
 import {
-  LineChart,
-  Line,
+  
+  
   XAxis,
   YAxis,
   CartesianGrid,
@@ -20,6 +19,7 @@ import {
 } from 'recharts';
 import { TrendingUp, DollarSign, Package, Users } from 'lucide-react';
 import { salesData, categoryStats } from '@/lib/mock-data';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#F97316'];
 

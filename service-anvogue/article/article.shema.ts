@@ -12,14 +12,14 @@ const tailleSchema = z.object({
 // Schéma principal de création d'article (CreateArticleDto)
 export const createArticleSchema = z.object({
   nom: z.string({
-    required_error: "Le nom est requis",
-    invalid_type_error: "Le nom doit être une chaîne de caractères",
+  
+    message: "Le nom doit être une chaîne de caractères",
   }).min(1, "Le nom est requis"),
 
   description: z.string().optional(),
 
   categorie_id: z.string({
-    required_error: "L'identifiant de la catégorie est requis",
+   
   }).uuid("La catégorie doit être un UUID"),
 
   collection_id: z.string().uuid("La collection doit être un UUID").optional(),
@@ -37,14 +37,14 @@ export const createArticleSchema = z.object({
 
   quantite: z.preprocess(
     (val) => (val === "" || val === undefined ? undefined : Number(val)),
-    z.number({ invalid_type_error: "La quantité doit être un nombre" }).optional()
+    z.number({ message: "La quantité doit être un nombre" }).optional()
   ),
 
   prix: z.preprocess(
     (val) => Number(val),
     z.number({
-      required_error: "Le prix est requis",
-      invalid_type_error: "Le prix doit être un nombre",
+    
+      message: "Le prix doit être un nombre",
     })
   ),
 
@@ -57,7 +57,7 @@ export const createArticleSchema = z.object({
     (val) => (val === "" || val === undefined ? undefined : Number(val)),
     z
       .number({
-        invalid_type_error: "Le prix promotionnel doit être un nombre",
+        message: "Le prix promotionnel doit être un nombre",
       })
       .optional()
   ),
